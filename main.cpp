@@ -4,8 +4,12 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <stdio.h>
+#include <thread>
 #include "swag_utils.h"
 #include "colours.h"
+#include "vec2.h"
+#include "ball.h"
+#include "block.h"
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -47,7 +51,11 @@ int main(int argc, char* args[]) {
     
     bool isRunning = true;
 
+    Cell cell_1(0, 0, 8, white);
+    cell_1.initRenderer(renderer, font);
+
     while (isRunning) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 milliseconds = 0.1 seconds
         SDL_Event e;
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -56,7 +64,7 @@ int main(int argc, char* args[]) {
         }
 
         clearScreen(renderer, black);
-
+        /* debug draw
         for (int i = 0; i < 10; i++) {
             drawText(renderer, (i * 25) + 60, (i * 25) + 60, std::to_string(i).c_str(), white, font);
         }
@@ -69,7 +77,16 @@ int main(int argc, char* args[]) {
 		drawRect(renderer, 40, 40, 10, 10, blue, false);
         drawFilledCircle(renderer, 60, 200, 50, yellow);
         drawCircle(renderer, 200, 60, 50, red);
+        */
+        static int inc = 1;
+        
+        if (cell_1.health < 1 || cell_1.health >= 9) {
+            inc = -inc;
+        }
 
+        cell_1.health += inc;
+
+        cell_1.draw();
         SDL_RenderPresent(renderer);
     }
 

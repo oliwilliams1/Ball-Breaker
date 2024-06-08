@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "swag_utils.h"
 #include <SDL_ttf.h>
+#include "block.h"
 
 void clearScreen(SDL_Renderer* renderer, SDL_Color colour)
 {
