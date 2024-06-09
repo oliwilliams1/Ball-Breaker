@@ -5,6 +5,12 @@
 #include <SDL_ttf.h>
 #include "block.h"
 
+struct renderData
+{
+	SDL_Renderer* renderer;
+	TTF_Font* font;
+};
+
 void clearScreen(SDL_Renderer* renderer, SDL_Color colour);
 
 void drawRect(SDL_Renderer* renderer, int x_pos, int y_pos, int width, int height, SDL_Color colour, bool fill);

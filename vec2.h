@@ -3,11 +3,9 @@
 
 class vec2
 {
-private:
+public:
     float x;
     float y;
-
-public:
     vec2() : x(0.0f), y(0.0f) {}
     vec2(float x) : x(x), y(x) {}
     vec2(float x, float y) : x(x), y(y) {}
