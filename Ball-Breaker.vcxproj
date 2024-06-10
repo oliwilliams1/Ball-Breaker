@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="ball.h" />
     <ClInclude Include="block.h" />
+    <ClInclude Include="cell_manager.h" />
     <ClInclude Include="colours.h" />
     <ClInclude Include="swag_utils.h" />
     <ClInclude Include="vec2.h" />

@@ -9,6 +9,7 @@ private:
 	vec2 velocity;
 	float radius;
     SDL_Renderer* renderer;
+	
 
 public:
 	Ball(vec2 position, vec2 velocity, float radius, SDL_Renderer* renderer) : position(position), velocity(velocity), radius(radius), renderer(renderer) {}
