@@ -9,7 +9,6 @@
 #include "swag_utils.h"
 #include "colours.h"
 #include "vec2.h"
-#include "ball.h"
 #include "cell_manager.h"
 #include "ball_manager.h"
 
@@ -31,7 +30,7 @@ int main(int argc, char* args[]) {
         return 1;
     }
 
-    window = SDL_CreateWindow("Ball Breaker!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Ball Buster!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_Quit();
@@ -54,7 +53,14 @@ int main(int argc, char* args[]) {
     
     bool isRunning = true;
 
-    BallMan BallManager(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    Uint64 previousTime = 0;
+    float deltaTime = 0.0f;
+
+    CellMan CellManager(renderer, font, SCREEN_WIDTH, SCREEN_HEIGHT, true);
+
+    CellManager.addCell(5, 5, 55);
+
+    BallMan BallManager(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, &CellManager);
     BallManager.draw();
 
     std::random_device rd;
@@ -68,12 +74,6 @@ int main(int argc, char* args[]) {
         BallManager.addBall(ballPos, vec2(dis(gen), dis(gen)));
     }
 
-    Uint64 previousTime = 0;
-    float deltaTime = 0.0f;
-
-    CellMan CellManager(renderer, font, SCREEN_WIDTH, SCREEN_HEIGHT, true);
-
-    CellManager.addCell(5, 5, 0);
 
     while (isRunning) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 milliseconds = 0.1 seconds
@@ -83,19 +83,6 @@ int main(int argc, char* args[]) {
                 isRunning = false;
             }
         }
-
-        clearScreen(renderer, black);
-        BallManager.update(deltaTime);
-        BallManager.draw();
-
-        CellManager.draw();
-
-        SDL_RenderPresent(renderer);
-
-        Uint64 currentTime = SDL_GetTicks64();
-        deltaTime = (currentTime - previousTime) / 1000.0f;
-        previousTime = currentTime;
-
         /* debug draw
         for (int i = 0; i < 10; i++) {
             drawText(renderer, (i * 25) + 60, (i * 25) + 60, std::to_string(i).c_str(), white, font);
@@ -111,11 +98,26 @@ int main(int argc, char* args[]) {
         drawCircle(renderer, 200, 60, 50, red);
         */
         //std::cout << "FPS = " << 1.0f / deltaTime << std::endl;
+
+        clearScreen(renderer, black);
+        BallManager.update(deltaTime);
+        BallManager.draw();
+
+        CellManager.draw();
+
+        SDL_RenderPresent(renderer);
+
+        Uint64 currentTime = SDL_GetTicks64();
+        deltaTime = (currentTime - previousTime) / 1000.0f;
+        previousTime = currentTime;
     }
 
     // Destory because cool
+    BallManager.destroy();
+    CellManager.destroy();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
 
     return 0;

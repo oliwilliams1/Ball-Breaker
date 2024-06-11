@@ -69,10 +69,40 @@ public:
 		cells[x][y].textureData = renderHealth(std::to_string(health).c_str());
 	}
 
+	bool isPointInCell(int x, int y)
+	{
+		x /= x_scale;
+		y /= y_scale;
 
+		if (x >= 0 && x < x_size && y >= 0 && y < y_size)
+		{
+			if (cells[x][y].active)
+				return true;
+
+			for (int _y = y - 1; _y <= y + 1; _y++)
+			{
+				for (int _x = x - 1; _x <= x + 1; _x++)
+				{
+					// skip the current cell
+					if (_x == x && _y == y)
+						continue;
+
+					// check if the neighboring cell is within the window bounds
+					if (_x >= 0 && _x < x_size && _y >= 0 && _y < y_size)
+					{
+						if (cells[_x][_y].active)
+							return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
 
 	void draw() 
 	{
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		for (int x = 0; x < x_size; x++) {
 			for (int y = 0; y < y_size; y++) {
 				if (cells[x][y].active) {
@@ -80,6 +110,15 @@ public:
 					SDL_Rect destRect = { x * x_scale, y * y_scale, cells[x][y].textureData.x, cells[x][y].textureData.y };
 					SDL_RenderCopy(renderer, cells[x][y].textureData.texture, NULL, &destRect);
 				}
+			}
+		}
+	}
+
+	void destroy()
+	{
+		for (int x = 0; x < x_size; x++) {
+			for (int y = 0; y < y_size; y++) {
+				SDL_DestroyTexture(cells[x][y].textureData.texture);
 			}
 		}
 	}
