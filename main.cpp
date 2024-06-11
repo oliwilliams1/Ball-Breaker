@@ -11,8 +11,9 @@
 #include "vec2.h"
 #include "ball.h"
 #include "cell_manager.h"
+#include "ball_manager.h"
 
-const int SCREEN_WIDTH = 550;
+const int SCREEN_WIDTH = 500;
 const int SCREEN_HEIGHT = 800;
 
 int main(int argc, char* args[]) {
@@ -53,29 +54,26 @@ int main(int argc, char* args[]) {
     
     bool isRunning = true;
 
-    Ball balls[10];
+    BallMan BallManager(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    BallManager.draw();
 
     std::random_device rd;
     std::mt19937 gen(rd());
 
     std::uniform_int_distribution<> dis(-500, 500);
 
+    vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
+
+    for (int i = 0; i < 10; i++) {
+        BallManager.addBall(ballPos, vec2(dis(gen), dis(gen)));
+    }
+
     Uint64 previousTime = 0;
     float deltaTime = 0.0f;
 
-    vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
+    CellMan CellManager(renderer, font, SCREEN_WIDTH, SCREEN_HEIGHT, true);
 
-    for (Ball& ball : balls) {
-        ball.init(ballPos, vec2(dis(gen), dis(gen)), 10, renderer);
-    }
-
-    CellMan CellManager(renderer, font);
-
-    CellManager.addCell(1, 3, 5);
-
-    CellManager.addCell(3, 2, 99);
-    CellManager.addCell(10, 10, 10);
-    
+    CellManager.addCell(5, 5, 0);
 
     while (isRunning) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 milliseconds = 0.1 seconds
@@ -87,12 +85,8 @@ int main(int argc, char* args[]) {
         }
 
         clearScreen(renderer, black);
-
-
-        for (Ball& ball : balls) {
-            ball.update(deltaTime, SCREEN_WIDTH, SCREEN_HEIGHT);
-			ball.draw();
-		}
+        BallManager.update(deltaTime);
+        BallManager.draw();
 
         CellManager.draw();
 

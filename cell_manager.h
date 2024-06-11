@@ -21,26 +21,44 @@ struct CellStruct
 class CellMan
 {
 private:
-	CellStruct cells[11][11]; // 10x10 2d array
+	CellStruct cells[10][16];
+	int x_size = sizeof(cells) / sizeof(cells[0]);
+	int y_size = sizeof(cells[0]) / sizeof(cells[0][0]);
+
+	int x_scale;
+	int y_scale;
+
 	SDL_Renderer* renderer;
 	TTF_Font* font;
 	SDL_Color colour = { 255, 255, 255, 255 };
 
 public:
-	CellMan(SDL_Renderer* renderer, TTF_Font* font) : renderer(renderer), font(font)
+	CellMan(SDL_Renderer* renderer, TTF_Font* font, int SCREEN_WIDTH, int SCREEN_HEIGHT, bool debug = false) : renderer(renderer), font(font)
 	{	
-		for (int i = 0; i < 11; i++) {
-			for (int j = 0; j < 11; j++) {
-				cells[i][j].rect = { i * 50, j * 50, 50, 50 };
+		x_scale = SCREEN_WIDTH / x_size;
+		y_scale = SCREEN_HEIGHT / y_size;
+		for (int i = 0; i < x_size; i++) {
+			for (int j = 0; j < y_size; j++) {
+				cells[i][j].rect = { i * x_scale, j * y_scale, x_scale, y_scale };
 			}
-		}		
+		}
+		if (debug) {
+			addCell(0, 0, 0);
+			for (int x = 0; x < x_size; x++) {
+				addCell(x, 0, x);
+			}
+
+			for (int y = 0; y < y_size; y++) {
+				addCell(0, y, y);
+			}
+		}
 	}
 
 	TextureData renderHealth(const char* health)
 	{
 		SDL_Surface* surface = TTF_RenderText_Solid(font, health, colour);
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-		//SDL free surface here?
+		SDL_FreeSurface(surface);
 		return { texture, surface->w, surface->h };
 	}
 
@@ -51,14 +69,16 @@ public:
 		cells[x][y].textureData = renderHealth(std::to_string(health).c_str());
 	}
 
+
+
 	void draw() 
 	{
-		for (int i = 0; i < 11; i++) {
-			for (int j = 0; j < 11; j++) {
-				if (cells[i][j].active) {
-					SDL_RenderDrawRect(renderer, &cells[i][j].rect);
-					SDL_Rect destRect = { i * 50 + ((cells[i][j].health < 10) ? 13 : 3), j * 50 + 9, cells[i][j].textureData.x, cells[i][j].textureData.y};
-					SDL_RenderCopy(renderer, cells[i][j].textureData.texture, NULL, &destRect);
+		for (int x = 0; x < x_size; x++) {
+			for (int y = 0; y < y_size; y++) {
+				if (cells[x][y].active) {
+					SDL_RenderDrawRect(renderer, &cells[x][y].rect);
+					SDL_Rect destRect = { x * x_scale, y * y_scale, cells[x][y].textureData.x, cells[x][y].textureData.y };
+					SDL_RenderCopy(renderer, cells[x][y].textureData.texture, NULL, &destRect);
 				}
 			}
 		}

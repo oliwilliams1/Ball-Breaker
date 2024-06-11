@@ -41,5 +41,8 @@
     <ClInclude Include="cell_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ball_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
