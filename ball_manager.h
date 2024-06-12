@@ -61,32 +61,32 @@ public:
 		}
     }
 
-    void renderFilledCircle(SDL_Surface* surface, int x, int y, int radius, Uint32 color) 
-    {
-        for (int dy = -radius; dy <= radius; dy++) {
-            int dx = (int)sqrt(radius * radius - dy * dy);
-            for (int px = x - dx; px <= x + dx; px++) {
-                Uint32* pixel = (Uint32*)((Uint8*)surface->pixels + (y + dy) * surface->pitch + px * sizeof(Uint32));
-                *pixel = color;
+    SDL_Texture* renderCircleToTexture(SDL_Renderer* renderer, SDL_Color colour) {
+        // Create a square texture with a size of 2 * radius
+        int size = 2 * radius;
+        SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size, size);
+
+        // Set the texture as the render target
+        SDL_SetRenderTarget(renderer, texture);
+
+        // Clear the texture
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+
+        // Draw the circle
+        SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                if (x * x + y * y <= radius * radius) {
+                    SDL_RenderDrawPoint(renderer, x + radius, y + radius);
+                }
             }
         }
-    }
 
-    SDL_Texture* renderCircleToTexture(SDL_Renderer* renderer, SDL_Color _color)
-    {
-        int radius = 10;
-        
-        int surfaceWidth = 2 * radius, surfaceHeight = 2 * radius;
-        SDL_Surface* surface = SDL_CreateRGBSurface(0, radius * 2, radius * 2, 32, 0, 0, 0, 0);
+        // Reset the render target to the default
+        SDL_SetRenderTarget(renderer, NULL);
 
-        Uint32 color = SDL_MapRGBA(surface->format, _color.r, _color.g, _color.b, _color.a);
-        renderFilledCircle(surface, radius, radius, radius, color);
-
-        SDL_Texture* circleTexture = SDL_CreateTextureFromSurface(renderer, surface);
-
-        //SDL_FreeSurface(surface);
-
-        return circleTexture;
+        return texture;
     }
 
     void draw()
@@ -97,7 +97,9 @@ public:
             int x = (int)balls[i].pos.x;
             int y = (int)balls[i].pos.y;
 
-            bool collision = cellManager->isPointInCell(x, y);
+            CellCollisionData data = cellManager->getCollisionData(x, y);
+
+            bool collision = data.collided;
 
             SDL_Rect dstrect = { x - 10, y - 10, 20, 20 };
             SDL_RenderCopy(renderer, (collision) ? ballRedTexture : ballTexture, NULL, &dstrect);

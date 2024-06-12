@@ -18,6 +18,12 @@ struct CellStruct
 	TextureData textureData;
 };
 
+struct CellCollisionData
+{
+	bool collided;
+	SDL_Rect rect;
+};
+
 class CellMan
 {
 private:
@@ -69,7 +75,7 @@ public:
 		cells[x][y].textureData = renderHealth(std::to_string(health).c_str());
 	}
 
-	bool isPointInCell(int x, int y)
+	CellCollisionData getCollisionData(int x, int y)
 	{
 		x /= x_scale;
 		y /= y_scale;
@@ -77,7 +83,7 @@ public:
 		if (x >= 0 && x < x_size && y >= 0 && y < y_size)
 		{
 			if (cells[x][y].active)
-				return true;
+				return CellCollisionData{ true, cells[x][y].rect };
 
 			for (int _y = y - 1; _y <= y + 1; _y++)
 			{
@@ -91,13 +97,13 @@ public:
 					if (_x >= 0 && _x < x_size && _y >= 0 && _y < y_size)
 					{
 						if (cells[_x][_y].active)
-							return true;
+							return CellCollisionData{ true, cells[_x][_y].rect };
 					}
 				}
 			}
 		}
 
-		return false;
+		return CellCollisionData{ false, SDL_Rect{} };
 	}
 
 	void draw() 

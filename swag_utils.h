@@ -21,4 +21,6 @@ void drawCircle(SDL_Renderer* renderer, int x, int y, int radius, SDL_Color colo
 
 void drawText(SDL_Renderer* renderer, int x, int y, const char * text, SDL_Color colour, TTF_Font* font);
 
+void clamp(int& val, int min, int max);
+
 #endif // SWAG_UTILS_H

@@ -83,20 +83,7 @@ int main(int argc, char* args[]) {
                 isRunning = false;
             }
         }
-        /* debug draw
-        for (int i = 0; i < 10; i++) {
-            drawText(renderer, (i * 25) + 60, (i * 25) + 60, std::to_string(i).c_str(), white, font);
-        }
-
-        drawText(renderer, SCREEN_WIDTH - 220, 10, "Score: 0", white, font);
-
-        drawRect(renderer, 10, 10, 10, 10, white, true);
-        drawRect(renderer, 20, 20, 10, 10, red, false);
-        drawRect(renderer, 30, 30, 10, 10, green, true);
-        drawRect(renderer, 40, 40, 10, 10, blue, false);
-        drawFilledCircle(renderer, 60, 200, 50, yellow);
-        drawCircle(renderer, 200, 60, 50, red);
-        */
+        
         //std::cout << "FPS = " << 1.0f / deltaTime << std::endl;
 
         clearScreen(renderer, black);
