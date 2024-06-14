@@ -2,6 +2,7 @@
 #define CELL_MANAGER_H
 
 #include "block.h"
+#include "swag_utils.h"
 
 struct TextureData
 {
@@ -75,7 +76,7 @@ public:
 		cells[x][y].textureData = renderHealth(std::to_string(health).c_str());
 	}
 
-	int clamp(int value, int min, int max) { // swag clamp func
+	int clamp(int value, int min, int max) { // Swag clamp function
 		if (value < min) {
 			return min;
 		}
@@ -87,45 +88,51 @@ public:
 		}
 	}
 
-	CellCollisionData getCollisionData(int ball_x, int ball_y)
+	void collisionTest(BallStruct* ball)
 	{
 		int radius = 10;
-		int cell_x = ball_x / x_scale;
-		int cell_y = ball_y / y_scale;
+		int cell_x = ball->pos.x / x_scale;
+		int cell_y = ball->pos.y / y_scale;
 
-		for (int x = -1; x < 2; x++)
+		// Iterate horizontally on 3x3 grid
+		for (int x = -1; x < 2; x++) 
 		{
 			int _x = clamp(cell_x + x, 0, x_size - 1);
 			if (_x < 0 || _x >= x_size) continue;
 
+			// Iterate vertically on 3x3 grid
 			for (int y = -1; y < 2; y++)
 			{
 				int _y = clamp(cell_y + y, 0, y_size - 1);
-				if (_y < 0 || _y >= y_size) continue;
+				if (_y < 0 || _y >= y_size) continue; 
 
 				if (cells[_x][_y].active)
 				{
-					int cellPos_x = cells[_x][_y].rect.x;
-					int cellPos_y = cells[_x][_y].rect.y;
-					int cellScale_x = cells[_x][_y].rect.w;
-					int cellScale_y = cells[_x][_y].rect.h;
+					// Use clamp function on both dimensions to find closest point on cell to the ball
+					float nearest_x = clamp(ball->pos.x, cells[_x][_y].rect.x, cells[_x][_y].rect.x + cells[_x][_y].rect.w - 1);
+					float nearest_y = clamp(ball->pos.y, cells[_x][_y].rect.y, cells[_x][_y].rect.y + cells[_x][_y].rect.h - 1);
 
-					// find the nearest point on the cell to the ball via clamp function
-					int nearest_x = clamp(ball_x, cellPos_x, cellPos_x + cellScale_x - 1);
-					int nearest_y = clamp(ball_y, cellPos_y, cellPos_y + cellScale_y - 1);
+					// Calculate distance
+					float dx = ball->pos.x - nearest_x;
+					float dy = ball->pos.y - nearest_y;
+					float distance = sqrt(dx * dx + dy * dy);
 
-					int distance = abs(nearest_x - ball_x) + abs(nearest_y - ball_y);
-					if (distance <= radius)
-					{
-						SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-						SDL_RenderDrawLine(renderer, ball_x, ball_y, nearest_x, nearest_y);
-						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-						return { true, (nearest_x - ball_x) > 0 };
+					// Check if distance is less than radius for collision reaction
+					if (distance <= radius) {
+						// Adjust ball position to the nearest point on the cell + radius along vector direction
+						ball->pos.x = nearest_x + (ball->pos.x - nearest_x) * (radius + 1) / (distance + 0.00001f);
+						ball->pos.y = nearest_y + (ball->pos.y - nearest_y) * (radius + 1) / (distance + 0.00001f);
+
+						// Adjust ball velocity based on what side of the cell the ball collided with
+						if (abs((ball->pos.x - nearest_x)) < abs((ball->pos.y - nearest_y))) {
+							ball->vel.y *= -1;
+						} else {
+							ball->vel.x *= -1;
+						}
 					}
 				}
 			}
 		}
-		return { false, false };
 	}
 
 	void draw() 

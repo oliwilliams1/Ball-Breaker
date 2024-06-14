@@ -66,11 +66,11 @@ int main(int argc, char* args[]) {
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    std::uniform_int_distribution<> dis(-50, 50);
+    std::uniform_int_distribution<> dis(-500, 500);
 
     vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 100; i++) {
         BallManager.addBall(ballPos, vec2(dis(gen), dis(gen)));
     }
 
