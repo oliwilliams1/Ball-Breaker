@@ -21,7 +21,7 @@ struct CellStruct
 struct CellCollisionData
 {
 	bool collided;
-	SDL_Rect rect;
+	bool axis; // 0 for x, 1 for y
 };
 
 class CellMan
@@ -75,35 +75,57 @@ public:
 		cells[x][y].textureData = renderHealth(std::to_string(health).c_str());
 	}
 
-	CellCollisionData getCollisionData(int x, int y)
+	int clamp(int value, int min, int max) { // swag clamp func
+		if (value < min) {
+			return min;
+		}
+		else if (value > max) {
+			return max;
+		}
+		else {
+			return value;
+		}
+	}
+
+	CellCollisionData getCollisionData(int ball_x, int ball_y)
 	{
-		x /= x_scale;
-		y /= y_scale;
+		int radius = 10;
+		int cell_x = ball_x / x_scale;
+		int cell_y = ball_y / y_scale;
 
-		if (x >= 0 && x < x_size && y >= 0 && y < y_size)
+		for (int x = -1; x < 2; x++)
 		{
-			if (cells[x][y].active)
-				return CellCollisionData{ true, cells[x][y].rect };
+			int _x = clamp(cell_x + x, 0, x_size - 1);
+			if (_x < 0 || _x >= x_size) continue;
 
-			for (int _y = y - 1; _y <= y + 1; _y++)
+			for (int y = -1; y < 2; y++)
 			{
-				for (int _x = x - 1; _x <= x + 1; _x++)
-				{
-					// skip the current cell
-					if (_x == x && _y == y)
-						continue;
+				int _y = clamp(cell_y + y, 0, y_size - 1);
+				if (_y < 0 || _y >= y_size) continue;
 
-					// check if the neighboring cell is within the window bounds
-					if (_x >= 0 && _x < x_size && _y >= 0 && _y < y_size)
+				if (cells[_x][_y].active)
+				{
+					int cellPos_x = cells[_x][_y].rect.x;
+					int cellPos_y = cells[_x][_y].rect.y;
+					int cellScale_x = cells[_x][_y].rect.w;
+					int cellScale_y = cells[_x][_y].rect.h;
+
+					// find the nearest point on the cell to the ball via clamp function
+					int nearest_x = clamp(ball_x, cellPos_x, cellPos_x + cellScale_x - 1);
+					int nearest_y = clamp(ball_y, cellPos_y, cellPos_y + cellScale_y - 1);
+
+					int distance = abs(nearest_x - ball_x) + abs(nearest_y - ball_y);
+					if (distance <= radius)
 					{
-						if (cells[_x][_y].active)
-							return CellCollisionData{ true, cells[_x][_y].rect };
+						SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+						SDL_RenderDrawLine(renderer, ball_x, ball_y, nearest_x, nearest_y);
+						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+						return { true, (nearest_x - ball_x) > 0 };
 					}
 				}
 			}
 		}
-
-		return CellCollisionData{ false, SDL_Rect{} };
+		return { false, false };
 	}
 
 	void draw() 

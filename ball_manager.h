@@ -97,12 +97,12 @@ public:
             int x = (int)balls[i].pos.x;
             int y = (int)balls[i].pos.y;
 
-            CellCollisionData data = cellManager->getCollisionData(x, y);
-
-            bool collision = data.collided;
+            CellCollisionData collisionData = cellManager->getCollisionData(x, y);
+            
+            //bool collision = data.collided;
 
             SDL_Rect dstrect = { x - 10, y - 10, 20, 20 };
-            SDL_RenderCopy(renderer, (collision) ? ballRedTexture : ballTexture, NULL, &dstrect);
+            SDL_RenderCopy(renderer, (collisionData.collided ? ballRedTexture : ballTexture), NULL, &dstrect);
         }
     }
 

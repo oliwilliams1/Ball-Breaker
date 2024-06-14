@@ -66,14 +66,13 @@ int main(int argc, char* args[]) {
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    std::uniform_int_distribution<> dis(-500, 500);
+    std::uniform_int_distribution<> dis(-50, 50);
 
     vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1; i++) {
         BallManager.addBall(ballPos, vec2(dis(gen), dis(gen)));
     }
-
 
     while (isRunning) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 milliseconds = 0.1 seconds

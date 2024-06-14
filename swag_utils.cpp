@@ -81,13 +81,3 @@ void drawText(SDL_Renderer* renderer, int x, int y, const char* text, SDL_Color 
     SDL_Rect destinationRect = { x, y, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &destinationRect);
 }
-
-void clamp(int& val, int min, int max)
-{
-	if (val < min) {
-		val = min;
-	}
-	else if (val > max) {
-		val = max;
-	}
-}

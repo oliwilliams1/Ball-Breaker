@@ -1,6 +1,7 @@
 #ifndef BALL_H
 #define BALL_H
 #include "vec2.h"
+#include <SDL.h>
 
 class Ball
 {
