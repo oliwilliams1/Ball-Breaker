@@ -1,5 +1,5 @@
-#ifndef BALL_MANAGER_H
-#define BALL_MANAGER_H
+#pragma once
+
 #include "vec2.h"
 #include <vector>
 #include "cell_manager.h"
@@ -112,5 +112,3 @@ public:
 		SDL_DestroyTexture(ballTexture);
 	}
 };
-
-#endif /* BALL_MANAGER_H */

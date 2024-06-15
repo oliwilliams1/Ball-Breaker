@@ -1,5 +1,4 @@
-#ifndef CELL_MANAGER_H
-#define CELL_MANAGER_H
+#pragma once
 
 #include "block.h"
 #include "swag_utils.h"
@@ -17,12 +16,6 @@ struct CellStruct
 	int health;
 	SDL_Rect rect;
 	TextureData textureData;
-};
-
-struct CellCollisionData
-{
-	bool collided;
-	bool axis; // 0 for x, 1 for y
 };
 
 class CellMan
@@ -61,13 +54,19 @@ public:
 		}
 	}
 
-	void renderHealth(CellStruct* cell)
+	int renderHealth(CellStruct* cell)
 	{
+		if (cell->textureData.texture != NULL or !cell->active) {
+			SDL_DestroyTexture(cell->textureData.texture);
+		}
+		if (!cell->active) return 1;
+
 		SDL_Surface* surface = TTF_RenderText_Solid(font, std::to_string(cell->health).c_str(), colour);
 		cell->textureData.texture = SDL_CreateTextureFromSurface(renderer, surface);
 		cell->textureData.x = surface->w;
 		cell->textureData.y = surface->h;
 		SDL_FreeSurface(surface);
+		return 0;
 	}
 
 	void addCell(int x, int y, int health) 
@@ -169,5 +168,3 @@ public:
 		}
 	}
 };
-
-#endif /* CELL_MANAGER_H */

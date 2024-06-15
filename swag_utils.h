@@ -1,5 +1,4 @@
-#ifndef SWAG_UTILS_H
-#define SWAG_UTILS_H
+#pragma once
 #include <iostream>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -26,5 +25,3 @@ void drawFilledCircle(SDL_Renderer* renderer, int x, int y, int radius, SDL_Colo
 void drawCircle(SDL_Renderer* renderer, int x, int y, int radius, SDL_Color color);
 
 void drawText(SDL_Renderer* renderer, int x, int y, const char * text, SDL_Color colour, TTF_Font* font);
-
-#endif // SWAG_UTILS_H

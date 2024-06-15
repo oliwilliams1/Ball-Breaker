@@ -134,16 +134,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ball_breaker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="streak_renderer.cpp" />
     <ClCompile Include="swag_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ball.h" />
+    <ClInclude Include="ball_breaker.h" />
     <ClInclude Include="ball_manager.h" />
-    <ClInclude Include="block.h" />
     <ClInclude Include="cell_manager.h" />
-    <ClInclude Include="colours.h" />
     <ClInclude Include="streak_renderer.h" />
     <ClInclude Include="swag_utils.h" />
     <ClInclude Include="vec2.h" />

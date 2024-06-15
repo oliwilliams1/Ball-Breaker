@@ -1,5 +1,4 @@
-#ifndef VEC2_H
-#define VEC2_H
+#pragma once
 #include <iostream>
 
 class vec2
@@ -85,5 +84,3 @@ public:
 		return vec2(x / length, y / length);
     }
 };
-
-#endif // VEC2_H
