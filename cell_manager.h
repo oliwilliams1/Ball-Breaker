@@ -61,19 +61,20 @@ public:
 		}
 	}
 
-	TextureData renderHealth(const char* health)
+	void renderHealth(CellStruct* cell)
 	{
-		SDL_Surface* surface = TTF_RenderText_Solid(font, health, colour);
-		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+		SDL_Surface* surface = TTF_RenderText_Solid(font, std::to_string(cell->health).c_str(), colour);
+		cell->textureData.texture = SDL_CreateTextureFromSurface(renderer, surface);
+		cell->textureData.x = surface->w;
+		cell->textureData.y = surface->h;
 		SDL_FreeSurface(surface);
-		return { texture, surface->w, surface->h };
 	}
 
 	void addCell(int x, int y, int health) 
 	{
 		cells[x][y].active = true;
 		cells[x][y].health = health;
-		cells[x][y].textureData = renderHealth(std::to_string(health).c_str());
+		renderHealth(&cells[x][y]);
 	}
 
 	int clamp(int value, int min, int max) { // Swag clamp function
@@ -86,6 +87,15 @@ public:
 		else {
 			return value;
 		}
+	}
+
+	void removeHealth(CellStruct* cell)
+	{
+		cell->health--;
+		if (cell->health <= 0) {
+			cell->active = false;
+		}
+		renderHealth(cell);
 	}
 
 	void collisionTest(BallStruct* ball)
@@ -119,6 +129,7 @@ public:
 
 					// Check if distance is less than radius for collision reaction
 					if (distance <= radius) {
+						removeHealth(&cells[_x][_y]);
 						// Adjust ball position to the nearest point on the cell + radius along vector direction
 						ball->pos.x = nearest_x + (ball->pos.x - nearest_x) * (radius + 1) / (distance + 0.00001f);
 						ball->pos.y = nearest_y + (ball->pos.y - nearest_y) * (radius + 1) / (distance + 0.00001f);

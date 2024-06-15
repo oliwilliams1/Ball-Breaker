@@ -19,14 +19,44 @@ private:
     CellMan* cellManager;
 
 public:
+    void renderCircleToTexture(SDL_Renderer* renderer, int radius) {
+        // Create a texture to fit bounds of circle
+        int size = 2 * radius;
+        SDL_Surface* surface = SDL_CreateRGBSurface(0, size, size, 32,
+            0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+        if (!surface) {
+            std::cerr << "SDL_CreateRGBSurface failed: " << SDL_GetError() << std::endl;
+            return;
+        }
+
+        Uint32* pixels = (Uint32*)surface->pixels; // Get the pixel array
+
+        // Fill surface with a white circle
+        for (int y = -radius; y < radius; ++y) {
+            for (int x = -radius; x < radius; ++x) {
+                if (x * x + y * y <= radius * radius) { // Check if the point is inside the circle
+                    pixels[(y + radius) * surface->w + (x + radius)] = 0xFFFFFFFF; // Set the pixel color with full alpha
+                }
+            }
+        }
+
+        // Create a texture from the surface
+        ballTexture = SDL_CreateTextureFromSurface(renderer, surface);
+        if (ballTexture == nullptr) {
+            std::cerr << "SDL_CreateTextureFromSurface failed: " << SDL_GetError() << std::endl;
+        }
+
+        // Free surface
+        SDL_FreeSurface(surface);
+    }
+
     BallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT, CellMan* cellManager) :
             renderer(renderer), 
             SCREEN_WIDTH(SCREEN_WIDTH), 
             SCREEN_HEIGHT(SCREEN_HEIGHT), 
             cellManager(cellManager) {
 
-        ballTexture = renderCircleToTexture(renderer, SDL_Color{ 255, 255, 255, 255 });
-        ballRedTexture = renderCircleToTexture(renderer, SDL_Color{ 255, 0, 0, 255 });
+        renderCircleToTexture(renderer, 10);
     }
 
     void addBall(vec2 pos, vec2 vel)
@@ -60,30 +90,7 @@ public:
 		}
     }
 
-    SDL_Texture* renderCircleToTexture(SDL_Renderer* renderer, SDL_Color colour) {
-        // Create a texture to fit the circle
-        int size = 2 * radius;
-        SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size, size);
-
-        // Set the texture as the render target
-        SDL_SetRenderTarget(renderer, texture);
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
-
-        // Draw the circle
-        SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                if (x * x + y * y <= radius * radius) {
-                    SDL_RenderDrawPoint(renderer, x + radius, y + radius);
-                }
-            }
-        }
-
-        SDL_SetRenderTarget(renderer, NULL);
-        return texture;
-    }
+    
 
     void draw()
     {
@@ -93,7 +100,10 @@ public:
             cellManager->collisionTest(&balls[i]);
 
             SDL_Rect dstrect = { (int)balls[i].pos.x - 10, (int)balls[i].pos.y - 10, 20, 20 };
-            SDL_RenderCopy(renderer, (ballTexture), NULL, &dstrect);
+
+            SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
+			
+            //SDL_RenderCopy(renderer, ballTexture, NULL, &dstrect);
         }
     }
 

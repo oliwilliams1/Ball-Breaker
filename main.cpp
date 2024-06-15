@@ -48,9 +48,11 @@ int main(int argc, char* args[]) {
 
     SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
     SDL_SetWindowAlwaysOnTop(window, SDL_FALSE);
+    // Enable alpha blending for the renderer
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     TTF_Font* font = TTF_OpenFont("Font/segment.ttf", 32);
-    
+
     bool isRunning = true;
 
     Uint64 previousTime = 0;
@@ -70,7 +72,7 @@ int main(int argc, char* args[]) {
 
     vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10; i++) {
         BallManager.addBall(ballPos, vec2(dis(gen), dis(gen)));
     }
 
@@ -82,7 +84,7 @@ int main(int argc, char* args[]) {
                 isRunning = false;
             }
         }
-        
+
         //std::cout << "FPS = " << 1.0f / deltaTime << std::endl;
 
         clearScreen(renderer, black);
