@@ -11,6 +11,7 @@
 #include "vec2.h"
 #include "cell_manager.h"
 #include "ball_manager.h"
+#include "streak_renderer.h"
 
 const int SCREEN_WIDTH = 500;
 const int SCREEN_HEIGHT = 800;
@@ -48,6 +49,7 @@ int main(int argc, char* args[]) {
 
     SDL_SetWindowAlwaysOnTop(window, SDL_TRUE);
     SDL_SetWindowAlwaysOnTop(window, SDL_FALSE);
+
     // Enable alpha blending for the renderer
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
@@ -59,7 +61,6 @@ int main(int argc, char* args[]) {
     float deltaTime = 0.0f;
 
     CellMan CellManager(renderer, font, SCREEN_WIDTH, SCREEN_HEIGHT, true);
-
     CellManager.addCell(5, 5, 55);
 
     BallMan BallManager(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, &CellManager);
@@ -75,6 +76,10 @@ int main(int argc, char* args[]) {
     for (int i = 0; i < 10; i++) {
         BallManager.addBall(ballPos, vec2(dis(gen), dis(gen)));
     }
+
+    int x, y;
+    Uint32 buttons;
+
 
     while (isRunning) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(100)); // 100 milliseconds = 0.1 seconds
@@ -92,6 +97,9 @@ int main(int argc, char* args[]) {
         BallManager.draw();
 
         CellManager.draw();
+
+        buttons = SDL_GetMouseState(&x, &y);
+        renderStreak(renderer, ballPos, vec2(x, y), 10);
 
         SDL_RenderPresent(renderer);
 

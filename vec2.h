@@ -1,5 +1,6 @@
 #ifndef VEC2_H
 #define VEC2_H
+#include <iostream>
 
 class vec2
 {
@@ -76,6 +77,12 @@ public:
     void print() const
     {
         std::cout << x << ", " << y << std::endl;
+    }
+
+    vec2 normalize() const
+    {
+		float length = sqrt(x * x + y * y);
+		return vec2(x / length, y / length);
     }
 };
 
