@@ -135,6 +135,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ball_breaker.cpp" />
+    <ClCompile Include="ball_manager.cpp" />
+    <ClCompile Include="cell_manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="streak_renderer.cpp" />
     <ClCompile Include="swag_utils.cpp" />

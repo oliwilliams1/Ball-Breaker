@@ -10,6 +10,11 @@ BallMan* BallBreaker::createBallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, in
     return new BallMan(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, CellManager);
 }
 
+streakMan* BallBreaker::createStreakMan(SDL_Renderer* renderer, float radius)
+{
+    return new streakMan(renderer);
+}
+
 void BallBreaker::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -48,6 +53,8 @@ void BallBreaker::init()
 
     BallManager = createBallMan(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, CellManager);
     BallManager->draw();
+
+    streakManager = createStreakMan(renderer, 10.0f);
 
     if (debug) {
         std::random_device rd;
@@ -94,7 +101,7 @@ void BallBreaker::render()
 
     BallManager->draw();
     CellManager->draw();
-    renderStreak(renderer, vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100), vec2(x, y), 10);
+    streakManager->renderStreak(vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100), vec2(x, y));
 
     SDL_RenderPresent(renderer);
 }

@@ -26,6 +26,7 @@ private:
     TTF_Font* font;
     CellMan* CellManager;
     BallMan* BallManager;
+    streakMan* streakManager;
     Uint64 previousTime;
     Uint64 currentTime;
     float deltaTime;
@@ -34,9 +35,8 @@ private:
     Uint32 buttons;
 
     CellMan* createCellMan(SDL_Renderer* renderer, TTF_Font* font, int SCREEN_WIDTH, int SCREEN_HEIGHT, bool debug);
-
     BallMan* createBallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT, CellMan* CellManager);
-
+    streakMan* createStreakMan(SDL_Renderer* renderer, float radius);
     void init();
 
 public:

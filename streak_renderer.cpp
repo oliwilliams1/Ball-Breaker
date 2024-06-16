@@ -1,28 +1,26 @@
-#include <SDL.h>
 #include "streak_renderer.h"
-#include "vec2.h"
-#include <vector>
 
-void renderStreak(SDL_Renderer* renderer, vec2 origPos, vec2 mousePos, float radius)
+void streakMan::renderStreak(vec2 fromPos, vec2 mousePos)
 {
-	vec2 dir = origPos - mousePos;
+	vec2 direction = fromPos - mousePos;
 
 	// Normalize
-	dir = dir.normalize();
+	direction = direction.normalize();
 
 	// Cross
-	vec2 cross = vec2(dir.y, -dir.x);
+	vec2 cross = vec2(direction.y, -direction.x);
 
 	// Scale vector to radius of ball
 	cross *= radius;
 
-	// Vertex data
-	const std::vector<SDL_Vertex> verts =
+	// Vertex Data
+	const std::vector<SDL_Vertex> verts = 
 	{
 		{ SDL_FPoint{ mousePos.x,           mousePos.y},            SDL_Color{ 255, 255, 255, 180 }, SDL_FPoint{ 0 }, },
-		{ SDL_FPoint{ origPos.x - cross.x,  origPos.y - cross.y},   SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
-		{ SDL_FPoint{ origPos.x + cross.x,  origPos.y + cross.y },  SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
+		{ SDL_FPoint{ fromPos.x - cross.x,  fromPos.y - cross.y},   SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
+		{ SDL_FPoint{ fromPos.x + cross.x,  fromPos.y + cross.y },  SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
 	};
+
 	// Render as triangle
 	SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
 }

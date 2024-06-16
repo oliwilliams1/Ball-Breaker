@@ -21,6 +21,15 @@
     <ClCompile Include="swag_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ball_breaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ball_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cell_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="streak_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -29,22 +38,16 @@
     <ClInclude Include="swag_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="colours.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vec2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ball.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="block.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cell_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ball_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ball_breaker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="streak_renderer.h">
