@@ -74,6 +74,8 @@ void BallMan::draw()
 
         SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
     }
+    SDL_Rect dstrect = { (SCREEN_WIDTH / 2) - 10, (SCREEN_HEIGHT - 100) - 10, 20, 20 };
+    SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
 }
 
 void BallMan::destroy()

@@ -63,10 +63,6 @@ void BallBreaker::init()
         std::uniform_int_distribution<> dis(-500, 500);
 
         vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
-
-        for (int i = 0; i < 10; i++) {
-            BallManager->addBall(ballPos, vec2(dis(gen), dis(gen)));
-        }
     }
 }
 
@@ -77,6 +73,14 @@ void BallBreaker::captureEvents()
     {
         if (e.type == SDL_QUIT) {
             isRunning = false;
+        }
+
+        if (e.type == SDL_MOUSEBUTTONDOWN) {
+            vec2 origPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
+            vec2 mouseVec = origPos - vec2(x, y);
+            mouseVec = mouseVec.normalize();
+            mouseVec *= 500.0f;
+            BallManager->addBall(origPos, mouseVec);
         }
     }
 
