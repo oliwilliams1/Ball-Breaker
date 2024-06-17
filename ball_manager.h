@@ -12,20 +12,22 @@ private:
 	SDL_Renderer* renderer;
     SDL_Texture* ballTexture;
     SDL_Texture* ballRedTexture;
-    int SCREEN_WIDTH;
-    int SCREEN_HEIGHT;
+    vec2* screenDimensions;
     int radius = 10;
-
     CellMan* cellManager;
 
 public:
+    vec2 ballSpawnPos;
+
     void renderCircleToTexture(SDL_Renderer* renderer, int radius);
 
-    BallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT, CellMan* cellManager);
+    BallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* cellManager);
 
     void addBall(vec2 pos, vec2 vel);
 
     void update(float dt);  
+
+    void checkIfOutOfBounds();
 
     void draw();
 

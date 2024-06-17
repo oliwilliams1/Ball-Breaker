@@ -1,8 +1,8 @@
 #include "streak_renderer.h"
 
-void streakMan::renderStreak(vec2 fromPos, vec2 mousePos)
+void streakMan::renderStreak(vec2 mousePos)
 {
-	vec2 direction = fromPos - mousePos;
+	vec2 direction = *fromPos - mousePos;
 
 	// Normalize
 	direction = direction.normalize();
@@ -17,8 +17,8 @@ void streakMan::renderStreak(vec2 fromPos, vec2 mousePos)
 	const std::vector<SDL_Vertex> verts = 
 	{
 		{ SDL_FPoint{ mousePos.x,           mousePos.y},            SDL_Color{ 255, 255, 255, 180 }, SDL_FPoint{ 0 }, },
-		{ SDL_FPoint{ fromPos.x - cross.x,  fromPos.y - cross.y},   SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
-		{ SDL_FPoint{ fromPos.x + cross.x,  fromPos.y + cross.y },  SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
+		{ SDL_FPoint{ fromPos->x - cross.x,  fromPos->y - cross.y},   SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
+		{ SDL_FPoint{ fromPos->x + cross.x,  fromPos->y + cross.y },  SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
 	};
 
 	// Render as triangle

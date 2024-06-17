@@ -1,18 +1,18 @@
 #include "ball_breaker.h"
 
-CellMan* BallBreaker::createCellMan(SDL_Renderer* renderer, TTF_Font* font, int SCREEN_WIDTH, int SCREEN_HEIGHT, bool debug = true)
+CellMan* BallBreaker::createCellMan(SDL_Renderer* renderer, TTF_Font* font, vec2* screenDimensions, bool debug = true)
 {
-    return new CellMan(renderer, font, SCREEN_WIDTH, SCREEN_HEIGHT, debug);
+    return new CellMan(renderer, font, screenDimensions, debug);
 }
 
-BallMan* BallBreaker::createBallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT, CellMan* CellManager)
+BallMan* BallBreaker::createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager)
 {
-    return new BallMan(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, CellManager);
+    return new BallMan(renderer, screenDimensions, CellManager);
 }
 
-streakMan* BallBreaker::createStreakMan(SDL_Renderer* renderer, float radius)
+streakMan* BallBreaker::createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos)
 {
-    return new streakMan(renderer);
+    return new streakMan(renderer, ballSpawnPos);
 }
 
 void BallBreaker::init()
@@ -26,7 +26,7 @@ void BallBreaker::init()
         SDL_Quit();
     }
 
-    window = SDL_CreateWindow("Ball Buster!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Ball Buster!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenDimensions.x + 250, screenDimensions.y + 150, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_Quit();
@@ -48,13 +48,13 @@ void BallBreaker::init()
 
     font = TTF_OpenFont("Font/segment.ttf", 32);
 
-    CellManager = createCellMan(renderer, font, SCREEN_WIDTH, SCREEN_HEIGHT, debug);
+    CellManager = createCellMan(renderer, font, &screenDimensions, debug);
     CellManager->addCell(5, 5, 55);
 
-    BallManager = createBallMan(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, CellManager);
+    BallManager = createBallMan(renderer, &screenDimensions, CellManager);
     BallManager->draw();
 
-    streakManager = createStreakMan(renderer, 10.0f);
+    streakManager = createStreakMan(renderer, 10.0f, &BallManager->ballSpawnPos);
 
     if (debug) {
         std::random_device rd;
@@ -62,7 +62,7 @@ void BallBreaker::init()
 
         std::uniform_int_distribution<> dis(-500, 500);
 
-        vec2 ballPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
+        vec2 ballPos(screenDimensions.x / 2, screenDimensions.y - 100);
     }
 }
 
@@ -76,11 +76,10 @@ void BallBreaker::captureEvents()
         }
 
         if (e.type == SDL_MOUSEBUTTONDOWN) {
-            vec2 origPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100);
-            vec2 mouseVec = origPos - vec2(x, y);
+            vec2 mouseVec = BallManager->ballSpawnPos - vec2(x, y);
             mouseVec = mouseVec.normalize();
             mouseVec *= 500.0f;
-            BallManager->addBall(origPos, mouseVec);
+            BallManager->addBall(BallManager->ballSpawnPos, mouseVec);
         }
     }
 
@@ -89,6 +88,7 @@ void BallBreaker::captureEvents()
 
 void BallBreaker::update()
 {
+    BallManager->checkIfOutOfBounds();
     BallManager->update(deltaTime);
 }
 
@@ -105,7 +105,7 @@ void BallBreaker::render()
 
     BallManager->draw();
     CellManager->draw();
-    streakManager->renderStreak(vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100), vec2(x, y));
+    streakManager->renderStreak(vec2(x, y));
 
     SDL_RenderPresent(renderer);
 }

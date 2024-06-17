@@ -18,8 +18,7 @@
 class BallBreaker
 {
 private:
-    const int SCREEN_WIDTH = 500;
-    const int SCREEN_HEIGHT = 800;
+    vec2 screenDimensions = vec2(500, 800);
     bool debug;
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -34,9 +33,9 @@ private:
     int x, y;
     Uint32 buttons;
 
-    CellMan* createCellMan(SDL_Renderer* renderer, TTF_Font* font, int SCREEN_WIDTH, int SCREEN_HEIGHT, bool debug);
-    BallMan* createBallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT, CellMan* CellManager);
-    streakMan* createStreakMan(SDL_Renderer* renderer, float radius);
+    CellMan* createCellMan(SDL_Renderer* renderer, TTF_Font* font, vec2* screenDimensions, bool debug);
+    BallMan* createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager);
+    streakMan* createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos);
     void init();
 
 public:

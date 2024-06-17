@@ -37,6 +37,7 @@ void BallMan::addBall(vec2 pos, vec2 vel)
     BallStruct ball;
     ball.pos = pos;
     ball.vel = vel;
+    ball.isInAnimation = false;
     balls.push_back(ball);
 }
 
@@ -48,17 +49,31 @@ void BallMan::update(float dt)
             balls[i].pos.x = radius;
             balls[i].vel.x = -balls[i].vel.x;
         }
-        if (balls[i].pos.x + radius > SCREEN_WIDTH) {
-            balls[i].pos.x = SCREEN_WIDTH - radius;
+        if (balls[i].pos.x + radius > screenDimensions->x) {
+            balls[i].pos.x = screenDimensions->x - radius;
             balls[i].vel.x = -balls[i].vel.x;
         }
         if (balls[i].pos.y - radius < 0) {
             balls[i].pos.y = radius;
             balls[i].vel.y = -balls[i].vel.y;
         }
-        if (balls[i].pos.y + radius > SCREEN_HEIGHT) {
-            balls[i].pos.y = SCREEN_HEIGHT - radius;
+        if (balls[i].pos.y + radius > screenDimensions->y) {
+            balls[i].pos.y = screenDimensions->y - radius;
             balls[i].vel.y = -balls[i].vel.y;
+        }
+    }
+}
+
+void BallMan::checkIfOutOfBounds()
+{
+    for (int i = 0; i < balls.size(); i++) {
+        if (balls[i].pos.y > ballSpawnPos.y && balls[i].isInAnimation == false) {
+            balls[i].isInAnimation = true;
+            balls[i].vel = vec2(-(balls[i].pos.x - ballSpawnPos.x), 0);
+            balls[i].vel = balls[i].vel.normalize() * 500.0f;
+        }
+        if (balls[i].isInAnimation && abs(ballSpawnPos.x - balls[i].pos.x) < 2) {
+            balls.erase(balls.begin() + i);
         }
     }
 }
@@ -74,7 +89,7 @@ void BallMan::draw()
 
         SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
     }
-    SDL_Rect dstrect = { (SCREEN_WIDTH / 2) - 10, (SCREEN_HEIGHT - 100) - 10, 20, 20 };
+    SDL_Rect dstrect = { ballSpawnPos.x - 10, ballSpawnPos.y - 10, 20, 20 };
     SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
 }
 
@@ -83,11 +98,11 @@ void BallMan::destroy()
     SDL_DestroyTexture(ballTexture);
 }
 
-BallMan::BallMan(SDL_Renderer* renderer, int SCREEN_WIDTH, int SCREEN_HEIGHT, CellMan* cellManager) :
+BallMan::BallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* cellManager) :
                 renderer(renderer),
-                SCREEN_WIDTH(SCREEN_WIDTH),
-                SCREEN_HEIGHT(SCREEN_HEIGHT),
+                screenDimensions(screenDimensions),
                 cellManager(cellManager) 
 {
     renderCircleToTexture(renderer, 10);
+    ballSpawnPos = vec2(screenDimensions->x / 2, screenDimensions->y - 100);
 }

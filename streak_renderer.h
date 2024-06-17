@@ -10,9 +10,10 @@ private:
 	vec2 origPos;
 	vec2 mousePos;
 	float radius = 10;
+	vec2* fromPos;
 
 public:
-	streakMan(SDL_Renderer* renderer) : renderer(renderer) {};
+	streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos) : renderer(renderer), fromPos(ballSpawnPos) {};
 
-	void renderStreak(vec2 fromPos, vec2 mousePos);
+	void renderStreak(vec2 mousePos);
 };

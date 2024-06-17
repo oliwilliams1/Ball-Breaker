@@ -33,10 +33,10 @@ private:
 	SDL_Color colour = { 255, 255, 255, 255 };
 
 public:
-	CellMan(SDL_Renderer* renderer, TTF_Font* font, int SCREEN_WIDTH, int SCREEN_HEIGHT, bool debug = false) : renderer(renderer), font(font)
+	CellMan(SDL_Renderer* renderer, TTF_Font* font, vec2* screenDimensions, bool debug = false) : renderer(renderer), font(font)
 	{	
-		x_scale = SCREEN_WIDTH / x_size;
-		y_scale = SCREEN_HEIGHT / y_size;
+		x_scale = screenDimensions->x / x_size;
+		y_scale = screenDimensions->y / y_size;
 		for (int i = 0; i < x_size; i++) {
 			for (int j = 0; j < y_size; j++) {
 				cells[i][j].rect = { i * x_scale, j * y_scale, x_scale, y_scale };
