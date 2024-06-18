@@ -12,7 +12,7 @@ BallMan* BallBreaker::createBallMan(SDL_Renderer* renderer, vec2* screenDimensio
 
 streakMan* BallBreaker::createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos)
 {
-    return new streakMan(renderer, ballSpawnPos);
+    return new streakMan(renderer, ballSpawnPos, BallManager);
 }
 
 void BallBreaker::init()
@@ -26,7 +26,7 @@ void BallBreaker::init()
         SDL_Quit();
     }
 
-    window = SDL_CreateWindow("Ball Buster!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenDimensions.x + 250, screenDimensions.y + 150, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Ball Buster!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenDimensions.x, screenDimensions.y, SDL_WINDOW_SHOWN);
     if (window == NULL) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_Quit();

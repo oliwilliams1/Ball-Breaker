@@ -81,6 +81,12 @@ void BallMan::checkIfOutOfBounds()
 void BallMan::draw()
 {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    // Center ball
+    SDL_Rect dstrect = { ballSpawnPos.x - 10, ballSpawnPos.y - 10, 20, 20 };
+    SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
+
+    // Balls in game
     for (int i = 0; i < balls.size(); i++)
     {
         cellManager->collisionTest(&balls[i]);
@@ -89,8 +95,22 @@ void BallMan::draw()
 
         SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
     }
-    SDL_Rect dstrect = { ballSpawnPos.x - 10, ballSpawnPos.y - 10, 20, 20 };
-    SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
+}
+
+void BallMan::drawTrajectory(vec2* direction, vec2* origPos)
+{
+    int r = 10;
+    for (int i = 0; i < 10; i++)
+    {
+        SDL_Rect dstrect = {
+        origPos->x + (i * 30) * direction->x - r + i,
+        origPos->y + (i * 30) * direction->y - r + i,
+        (r - i) * 2,
+        (r - i) * 2,
+        };
+
+		SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
+    }
 }
 
 void BallMan::destroy()

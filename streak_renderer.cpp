@@ -23,4 +23,6 @@ void streakMan::renderStreak(vec2 mousePos)
 
 	// Render as triangle
 	SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
+
+	ballManager->drawTrajectory(&direction, fromPos);
 }

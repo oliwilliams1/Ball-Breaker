@@ -29,6 +29,8 @@ public:
 
     void checkIfOutOfBounds();
 
+    void drawTrajectory(vec2* direction, vec2* origPos);
+
     void draw();
 
     void destroy();
