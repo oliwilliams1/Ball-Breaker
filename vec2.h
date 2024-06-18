@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "mat2.h"
 
 class vec2
 {
@@ -69,9 +70,9 @@ public:
     }
 
     vec2 operator-() const
-	{
-		return vec2(-x, -y);
-	}
+    {
+        return vec2(-x, -y);
+    }
 
     void print() const
     {
@@ -80,7 +81,12 @@ public:
 
     vec2 normalize() const
     {
-		float length = sqrt(x * x + y * y);
-		return vec2(x / length, y / length);
+        float length = sqrt(x * x + y * y);
+        return vec2(x / length, y / length);
     }
+
+    vec2 operator*(const mat2& other) const
+	{
+		return vec2(x * other.m[0][0] + y * other.m[1][0], x * other.m[0][1] + y * other.m[1][1]);
+	}
 };

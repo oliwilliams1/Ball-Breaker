@@ -14,8 +14,17 @@ private:
 	float radius = 10;
 	vec2* fromPos;
 
+	vec2 arrowVerts[6];
+	vec2 transformedArrowVerts[6];
+
 public:
-	streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos, BallMan* ballManager) : renderer(renderer), fromPos(ballSpawnPos), ballManager(ballManager) {};
+	streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos, BallMan* ballManager);
+
+	void constructArrow();
+
+	void renderTrajectory(vec2* arrowVerts[6]);
+
+	void transformArrows();
 
 	void renderStreak(vec2 mousePos);
 };

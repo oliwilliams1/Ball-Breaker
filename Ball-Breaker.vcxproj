@@ -145,6 +145,7 @@
     <ClInclude Include="ball_breaker.h" />
     <ClInclude Include="ball_manager.h" />
     <ClInclude Include="cell_manager.h" />
+    <ClInclude Include="mat2.h" />
     <ClInclude Include="streak_renderer.h" />
     <ClInclude Include="swag_utils.h" />
     <ClInclude Include="vec2.h" />
