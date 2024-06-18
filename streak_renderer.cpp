@@ -25,7 +25,7 @@ void streakMan::renderStreak(vec2 mousePos)
 	// Render as triangle
 	SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
 
-	transformArrows();
+	transformArrows(direction);
 }
 
 void streakMan::constructArrow()
@@ -45,55 +45,63 @@ void streakMan::constructArrow()
 	}
 }
 
-void streakMan::renderTrajectory(vec2* arrowVerts[6])
+void streakMan::renderTrajectory(vec2* arrowVerts[6], SDL_Color colour)
 {
 	const std::vector<SDL_Vertex> verts =
 	{
-		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[1]->x, arrowVerts[1]->y}, SDL_Color{ 255, 255, 255, 255 }, SDL_FPoint{ 0 }, },
-		{ SDL_FPoint{arrowVerts[2]->x, arrowVerts[2]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[1]->x, arrowVerts[1]->y}, colour, SDL_FPoint{ 0 }, },
+		{ SDL_FPoint{arrowVerts[2]->x, arrowVerts[2]->y}, colour, SDL_FPoint{0},},
 		
-		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[1]->x, arrowVerts[1]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[3]->x, arrowVerts[3]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[1]->x, arrowVerts[1]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[3]->x, arrowVerts[3]->y}, colour, SDL_FPoint{0},},
 
-		{ SDL_FPoint{arrowVerts[2]->x, arrowVerts[2]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[4]->x, arrowVerts[4]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[2]->x, arrowVerts[2]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[4]->x, arrowVerts[4]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, colour, SDL_FPoint{0},},
 
-		{ SDL_FPoint{arrowVerts[3]->x, arrowVerts[3]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[5]->x, arrowVerts[5]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
-		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, SDL_Color{255, 255, 255, 255}, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[3]->x, arrowVerts[3]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[5]->x, arrowVerts[5]->y}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{arrowVerts[0]->x, arrowVerts[0]->y}, colour, SDL_FPoint{0},},
 
 	};
 
 	SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
 }
 
-void streakMan::transformArrows()
+void streakMan::transformArrows(vec2 direction)
 {
-	static float angle = 0.0f;
-	angle += 0.001f;
-	mat2 scale(1.0f, 0.0f,
-			   0.0f, 1.0f);
-
-	mat2 rotation(cos(angle), -sin(angle),
-			      sin(angle), cos(angle));
-
-	mat2 combinedMatrix = scale * rotation;
-
-	vec2 transformedArrowVerts[6];
-	for (int i = 0; i < 6; i++)
+	for (int arrowInt = 0; arrowInt < 6; arrowInt++)
 	{
-		transformedArrowVerts[i] = arrowVerts[i] * combinedMatrix;
-	}
+		float angle = atan2(direction.x, direction.y) + M_PI;
+		mat2 scale(0.8f - arrowInt * 0.125f,  0.0f,
+				   0.0f,                    0.8f -  arrowInt * 0.125f);
 
-	vec2* temp[6];
-	for (int i = 0; i < 6; i++)
-	{
-		temp[i] = &transformedArrowVerts[i];
+		mat2 rotation(cos(angle), -sin(angle),
+			sin(angle), cos(angle));
+
+		mat2 combinedMatrix = scale * rotation;
+
+		vec2 transformedArrowVerts[6];
+		for (int i = 0; i < 6; i++)
+		{
+			transformedArrowVerts[i] = arrowVerts[i] * combinedMatrix;
+		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			transformedArrowVerts[i] += *fromPos + direction * (arrowInt * (40.0f * (1 - (arrowInt * 0.05f))) + 40.0f);
+		}
+
+		vec2* temp[6];
+		for (int i = 0; i < 6; i++)
+		{
+			temp[i] = &transformedArrowVerts[i];
+		}
+
+		renderTrajectory(temp, SDL_Color{ 255, 255, 255, static_cast<Uint8>(255 * (1 - (arrowInt * 0.1f))) });
 	}
-	renderTrajectory(temp);	
 }
 
 streakMan::streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos, BallMan* ballManager) {

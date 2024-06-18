@@ -22,9 +22,9 @@ public:
 
 	void constructArrow();
 
-	void renderTrajectory(vec2* arrowVerts[6]);
+	void renderTrajectory(vec2* arrowVerts[6], SDL_Color colour);
 
-	void transformArrows();
+	void transformArrows(vec2 direction);
 
 	void renderStreak(vec2 mousePos);
 };
