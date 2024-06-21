@@ -17,8 +17,10 @@ private:
 	vec2 arrowVerts[6];
 	vec2 transformedArrowVerts[6];
 
+	Uint64* time;
+
 public:
-	streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos, BallMan* ballManager);
+	streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos, BallMan* ballManager, Uint64* time);
 
 	void constructArrow();
 

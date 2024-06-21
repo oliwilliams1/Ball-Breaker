@@ -35,7 +35,7 @@ private:
 
     CellMan* createCellMan(SDL_Renderer* renderer, TTF_Font* font, vec2* screenDimensions, bool debug);
     BallMan* createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager);
-    streakMan* createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos);
+    streakMan* createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos, Uint64* time);
     void init();
 
 public:
