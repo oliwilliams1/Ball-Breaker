@@ -14,7 +14,7 @@
 #include "cell_manager.h"
 #include "ball_manager.h"
 #include "streak_renderer.h"
-
+#include "ball_counter.h"
 class BallBreaker
 {
 private:
@@ -26,6 +26,7 @@ private:
     CellMan* CellManager;
     BallMan* BallManager;
     streakMan* streakManager;
+    ballCounter* ballCounterManager;
     Uint64 previousTime;
     Uint64 currentTime;
     float deltaTime;
@@ -36,6 +37,7 @@ private:
     CellMan* createCellMan(SDL_Renderer* renderer, TTF_Font* font, vec2* screenDimensions, bool debug);
     BallMan* createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager);
     streakMan* createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos, Uint64* time);
+    ballCounter* createBallCounterManager(SDL_Renderer* renderer, TTF_Font* font, vec2* ballPos);
     void init();
 
 public:

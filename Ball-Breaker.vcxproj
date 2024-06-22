@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ball_breaker.cpp" />
+    <ClCompile Include="ball_counter.cpp" />
     <ClCompile Include="ball_manager.cpp" />
     <ClCompile Include="cell_manager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -143,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ball_breaker.h" />
+    <ClInclude Include="ball_counter.h" />
     <ClInclude Include="ball_manager.h" />
     <ClInclude Include="cell_manager.h" />
     <ClInclude Include="mat2.h" />

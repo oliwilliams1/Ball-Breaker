@@ -15,6 +15,11 @@ streakMan* BallBreaker::createStreakMan(SDL_Renderer* renderer, float radius, ve
     return new streakMan(renderer, ballSpawnPos, BallManager, time);
 }
 
+ballCounter* BallBreaker::createBallCounterManager(SDL_Renderer*, TTF_Font*, vec2* ballPos)
+{
+	return new ballCounter(renderer, font, ballPos);
+}
+
 void BallBreaker::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -55,6 +60,9 @@ void BallBreaker::init()
     BallManager->draw();
 
     streakManager = createStreakMan(renderer, 10.0f, &BallManager->ballSpawnPos, &currentTime);
+
+    ballCounterManager = createBallCounterManager(renderer, font, &BallManager->ballSpawnPos);
+    ballCounterManager->renderNew();
 
     if (debug) {
         std::random_device rd;
@@ -106,6 +114,7 @@ void BallBreaker::render()
     BallManager->draw();
     CellManager->draw();
     streakManager->renderStreak(vec2(x, y));
+    ballCounterManager->draw();
 
     SDL_RenderPresent(renderer);
 }
@@ -119,8 +128,10 @@ void BallBreaker::run()
 
 void BallBreaker::destroy()
 {
+    TTF_CloseFont(font);
     BallManager->destroy();
     CellManager->destroy();
+    ballCounterManager->destroy();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();
