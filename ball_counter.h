@@ -10,12 +10,11 @@ private:
 	TTF_Font* font;
 	SDL_Renderer* renderer;
 	vec2* ballPos;
-	vec2 savedBallPos;
 
 public:
 	ballCounter(SDL_Renderer* renderer, TTF_Font* font, vec2* ballPos);
 
-	void renderNew();
+	void renderNew(int ballsNum);
 
 	void draw();
 

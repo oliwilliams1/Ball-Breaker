@@ -15,13 +15,14 @@ private:
     vec2* screenDimensions;
     int radius = 10;
     CellMan* cellManager;
+    int* ballsRecieved;
 
 public:
     vec2 ballSpawnPos;
 
     void renderCircleToTexture(SDL_Renderer* renderer, int radius);
 
-    BallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* cellManager);
+    BallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* cellManager, int* ballsRecieved);
 
     void addBall(vec2 pos, vec2 vel);
 
@@ -32,6 +33,8 @@ public:
     void drawTrajectory(vec2* direction, vec2* origPos);
 
     void draw();
+
+    void drawCenterBall();
 
     void destroy();
 };

@@ -5,9 +5,9 @@ CellMan* BallBreaker::createCellMan(SDL_Renderer* renderer, TTF_Font* font, vec2
     return new CellMan(renderer, font, screenDimensions, debug);
 }
 
-BallMan* BallBreaker::createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager)
+BallMan* BallBreaker::createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager, int* ballsRecieved)
 {
-    return new BallMan(renderer, screenDimensions, CellManager);
+    return new BallMan(renderer, screenDimensions, CellManager, ballsRecieved);
 }
 
 streakMan* BallBreaker::createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos, Uint64* time)
@@ -56,13 +56,13 @@ void BallBreaker::init()
     CellManager = createCellMan(renderer, font, &screenDimensions, debug);
     CellManager->addCell(5, 5, 55);
 
-    BallManager = createBallMan(renderer, &screenDimensions, CellManager);
+    BallManager = createBallMan(renderer, &screenDimensions, CellManager, &ballsRecieved);
     BallManager->draw();
 
     streakManager = createStreakMan(renderer, 10.0f, &BallManager->ballSpawnPos, &currentTime);
 
     ballCounterManager = createBallCounterManager(renderer, font, &BallManager->ballSpawnPos);
-    ballCounterManager->renderNew();
+    ballCounterManager->renderNew(ballsNum);
 
     if (debug) {
         std::random_device rd;
@@ -83,11 +83,17 @@ void BallBreaker::captureEvents()
             isRunning = false;
         }
 
-        if (e.type == SDL_MOUSEBUTTONDOWN) {
-            vec2 mouseVec = BallManager->ballSpawnPos - vec2(x, y);
+        if (readyToShoot && !shooting && e.type == SDL_MOUSEBUTTONDOWN) {
+            mouseVec = BallManager->ballSpawnPos - vec2(x, y);
             mouseVec = mouseVec.normalize();
             mouseVec *= 500.0f;
+            renderTrajectory = false;
+            readyToShoot = false;
+            shooting = true;
+            timeLastShot = SDL_GetTicks64();
             BallManager->addBall(BallManager->ballSpawnPos, mouseVec);
+            ballsAdded++;
+            ballCounterManager->renderNew(ballsNum - ballsAdded);
         }
     }
 
@@ -96,8 +102,40 @@ void BallBreaker::captureEvents()
 
 void BallBreaker::update()
 {
+    //std::cout << "Balls added: " << ballsAdded << std::endl;
+    //std::cout << "Balls revieced: " << ballsRecieved << std::endl;
     BallManager->checkIfOutOfBounds();
     BallManager->update(deltaTime);
+
+    if (shooting) {
+        if ((SDL_GetTicks64() - timeLastShot) / 1000.0f > timeBetweenShots) {
+            timeLastShot = SDL_GetTicks64();
+            BallManager->addBall(BallManager->ballSpawnPos, mouseVec);
+            ballsAdded++;
+            ballCounterManager->renderNew(ballsRecieved);
+        }
+
+        if (ballsAdded >= ballsNum) {
+            ballsAdded = 0;
+            ballCounterManager->renderNew(ballsNum);
+            shooting = false;
+        }
+    }
+
+    if (oldBallsRecieved != ballsRecieved) {
+        int numToRender = (ballsRecieved == 0) ? ballsNum : ballsRecieved;
+        ballCounterManager->renderNew(numToRender);
+        oldBallsRecieved = ballsRecieved;
+    }
+
+    if (ballsRecieved > 0) {
+        renderTrajectory = true;
+    }
+
+    if (ballsRecieved == ballsNum) {
+        ballsRecieved = 0;
+        readyToShoot = true;
+    }
 }
 
 void BallBreaker::updateDeltaTime()
@@ -113,8 +151,12 @@ void BallBreaker::render()
 
     BallManager->draw();
     CellManager->draw();
-    streakManager->renderStreak(vec2(x, y));
-    ballCounterManager->draw();
+
+    if (renderTrajectory) {
+        BallManager->drawCenterBall();
+        streakManager->renderStreak(vec2(x, y));
+        ballCounterManager->draw();
+    }
 
     SDL_RenderPresent(renderer);
 }

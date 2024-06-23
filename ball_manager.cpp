@@ -74,6 +74,8 @@ void BallMan::checkIfOutOfBounds()
         }
         if (balls[i].isInAnimation && abs(ballSpawnPos.x - balls[i].pos.x) < 2) {
             balls.erase(balls.begin() + i);
+            *ballsRecieved = *ballsRecieved + 1;
+            std::cout << *ballsRecieved << std::endl;
         }
     }
 }
@@ -81,10 +83,6 @@ void BallMan::checkIfOutOfBounds()
 void BallMan::draw()
 {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    // Center ball
-    SDL_Rect dstrect = { ballSpawnPos.x - 10, ballSpawnPos.y - 10, 20, 20 };
-    SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
 
     // Balls in game
     for (int i = 0; i < balls.size(); i++)
@@ -95,6 +93,13 @@ void BallMan::draw()
 
         SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
     }
+}
+
+void BallMan::drawCenterBall()
+{
+    // Center ball
+    SDL_Rect dstrect = { ballSpawnPos.x - 10, ballSpawnPos.y - 10, 20, 20 };
+    SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
 }
 
 void BallMan::drawTrajectory(vec2* direction, vec2* origPos)
@@ -118,10 +123,11 @@ void BallMan::destroy()
     SDL_DestroyTexture(ballTexture);
 }
 
-BallMan::BallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* cellManager) :
+BallMan::BallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* cellManager, int* ballsRecieved) :
                 renderer(renderer),
                 screenDimensions(screenDimensions),
-                cellManager(cellManager) 
+                cellManager(cellManager),
+                ballsRecieved(ballsRecieved)
 {
     renderCircleToTexture(renderer, 10);
     ballSpawnPos = vec2(screenDimensions->x / 2, screenDimensions->y - 100);

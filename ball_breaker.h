@@ -30,12 +30,22 @@ private:
     Uint64 previousTime;
     Uint64 currentTime;
     float deltaTime;
+    int ballsNum = 20;
+    int ballsAdded = 0;
+    int oldBallsRecieved = 0;
+    int ballsRecieved = 0;
+    bool readyToShoot = true;
+    bool renderTrajectory = true;
+    Uint64 timeLastShot;
+    float timeBetweenShots = 0.1f;
+    bool shooting = false;
+    vec2 mouseVec;
 
     int x, y;
     Uint32 buttons;
 
     CellMan* createCellMan(SDL_Renderer* renderer, TTF_Font* font, vec2* screenDimensions, bool debug);
-    BallMan* createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager);
+    BallMan* createBallMan(SDL_Renderer* renderer, vec2* screenDimensions, CellMan* CellManager, int* ballsRecieved);
     streakMan* createStreakMan(SDL_Renderer* renderer, float radius, vec2* ballSpawnPos, Uint64* time);
     ballCounter* createBallCounterManager(SDL_Renderer* renderer, TTF_Font* font, vec2* ballPos);
     void init();
