@@ -37,4 +37,6 @@ public:
     void drawCenterBall();
 
     void destroy();
+
+    void returnBalls();
 };

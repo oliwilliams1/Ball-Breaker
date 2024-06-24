@@ -40,6 +40,7 @@ private:
     float timeBetweenShots = 0.1f;
     bool shooting = false;
     vec2 mouseVec;
+    vec2 bringDownButtonPos = vec2(screenDimensions.x - 60, screenDimensions.y - 60);
 
     int x, y;
     Uint32 buttons;

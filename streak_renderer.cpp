@@ -128,6 +128,28 @@ void streakMan::transformArrows(vec2 direction)
 	}
 }
 
+void streakMan::bringDownArrow(vec2 pos)
+{
+	SDL_Color colour = { 255, 255, 255, 255 };
+	const std::vector<SDL_Vertex> verts =
+	{
+		{ SDL_FPoint{pos.x + 10.0f, pos.y},         colour, SDL_FPoint{0},},
+		{ SDL_FPoint{pos.x + 15.0f, pos.y},         colour, SDL_FPoint{0},},
+		{ SDL_FPoint{pos.x + 10.0f, pos.y + 20.0f}, colour, SDL_FPoint{0},},
+
+		{ SDL_FPoint{pos.x + 15.0f, pos.y},         colour, SDL_FPoint{0},},
+		{ SDL_FPoint{pos.x + 10.0f, pos.y + 20.0f}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{pos.x + 15.0f, pos.y + 20.0f}, colour, SDL_FPoint{0},},
+
+		{ SDL_FPoint{pos.x + 2.0f,  pos.y + 20.0f}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{pos.x + 23.0f, pos.y + 20.0f}, colour, SDL_FPoint{0},},
+		{ SDL_FPoint{pos.x + 12.5f, pos.y + 30.0f}, colour, SDL_FPoint{0},},
+
+	};
+
+	SDL_RenderGeometry(renderer, nullptr, verts.data(), verts.size(), nullptr, 0);
+}
+
 streakMan::streakMan(SDL_Renderer* renderer, vec2* ballSpawnPos, BallMan* ballManager, Uint64* time) {
 	this->time = time;
 	this->renderer = renderer;

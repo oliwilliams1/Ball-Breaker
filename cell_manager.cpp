@@ -44,8 +44,9 @@ void CellMan::removeHealth(CellStruct* cell)
 	renderHealth(cell);
 }
 
-void CellMan::collisionTest(BallStruct* ball)
+int CellMan::collisionTest(BallStruct* ball)
 {
+	if (ball->detectCollision == false) return 0;
 	int radius = 10;
 	int cell_x = ball->pos.x / x_scale;
 	int cell_y = ball->pos.y / y_scale;
@@ -91,6 +92,7 @@ void CellMan::collisionTest(BallStruct* ball)
 			}
 		}
 	}
+	return 1;
 }
 
 void CellMan::draw()

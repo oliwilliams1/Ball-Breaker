@@ -38,6 +38,7 @@ void BallMan::addBall(vec2 pos, vec2 vel)
     ball.pos = pos;
     ball.vel = vel;
     ball.isInAnimation = false;
+    ball.detectCollision = true;
     balls.push_back(ball);
 }
 
@@ -116,6 +117,16 @@ void BallMan::drawTrajectory(vec2* direction, vec2* origPos)
 
 		SDL_RenderCopy(renderer, ballTexture, nullptr, &dstrect);
     }
+}
+
+void BallMan::returnBalls()
+{
+    for (int i = 0; i < balls.size(); i++)
+	{
+		balls[i].vel = ballSpawnPos - balls[i].pos;
+        balls[i].vel = balls[i].vel.normalize() * 500.0f;
+        balls[i].detectCollision = false;
+	}
 }
 
 void BallMan::destroy()

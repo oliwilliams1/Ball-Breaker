@@ -62,7 +62,7 @@ public:
 
 	void removeHealth(CellStruct* cell);
 
-	void collisionTest(BallStruct* ball);
+	int collisionTest(BallStruct* ball);
 
 	void draw();
 

@@ -29,4 +29,6 @@ public:
 	void transformArrows(vec2 direction);
 
 	void renderStreak(vec2 mousePos);
+
+	void bringDownArrow(vec2 pos);
 };

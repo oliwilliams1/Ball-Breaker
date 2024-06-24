@@ -95,6 +95,15 @@ void BallBreaker::captureEvents()
             ballsAdded++;
             ballCounterManager->renderNew(ballsNum - ballsAdded);
         }
+
+        if (e.type == SDL_MOUSEBUTTONDOWN) {
+            if (x > bringDownButtonPos.x - 5 && x < bringDownButtonPos.x + 25 && y > bringDownButtonPos.y - 5&& y < bringDownButtonPos.y + 35) {
+                if (!readyToShoot && ballsAdded == 0) {
+                    BallManager->returnBalls();
+                    std::cout << "Returning balls" << std::endl;
+                }
+            }
+        }
     }
 
     buttons = SDL_GetMouseState(&x, &y);
@@ -108,8 +117,8 @@ void BallBreaker::update()
     BallManager->update(deltaTime);
 
     if (shooting) {
-        if ((SDL_GetTicks64() - timeLastShot) / 1000.0f > timeBetweenShots) {
-            timeLastShot = SDL_GetTicks64();
+        if ((currentTime - timeLastShot) / 1000.0f > timeBetweenShots) {
+            timeLastShot = currentTime;
             BallManager->addBall(BallManager->ballSpawnPos, mouseVec);
             ballsAdded++;
             ballCounterManager->renderNew(ballsRecieved);
@@ -156,6 +165,9 @@ void BallBreaker::render()
         BallManager->drawCenterBall();
         streakManager->renderStreak(vec2(x, y));
         ballCounterManager->draw();
+    }
+    if (!readyToShoot && ballsAdded == 0) {
+        streakManager->bringDownArrow(bringDownButtonPos);
     }
 
     SDL_RenderPresent(renderer);

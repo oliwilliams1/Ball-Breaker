@@ -12,6 +12,7 @@ struct renderData
 
 struct BallStruct
 {
+	bool detectCollision;
 	bool isInAnimation;
     vec2 pos;
     vec2 vel;
